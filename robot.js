@@ -3,69 +3,70 @@ var cheerio = require('cheerio');
 var URL = require('url-parse');
 
 var START_URL = "http://127.0.0.1";
-var SEARCH_WORD = "stemming";
-var MAX_PAGES_TO_VISIT = 10;
-
-var pagesVisited = {};
-var numPagesVisited = 0;
-var pagesToVisit = [];
+var host = START_URL;
+var MAX_PAGES_TO_VISIT = 10000;
+var pages_visited = {};
+var num_pages_visited = 0;
+var pages_to_visit = [];
+var broken_link = [];
 var url = new URL(START_URL);
 var baseUrl = url.protocol + "//" + url.hostname;
 
-pagesToVisit.push(START_URL);
+pages_to_visit.push(START_URL);
 crawl();
 
 function crawl() {
-  if(numPagesVisited >= MAX_PAGES_TO_VISIT) {
+  if(num_pages_visited >= MAX_PAGES_TO_VISIT) {
     console.log("Reached max limit of number of pages to visit.");
     return;
   }
-  var nextPage = pagesToVisit.pop();
-  if (nextPage in pagesVisited) {
-    // We've already visited this page, so repeat the crawl
+  var next_page = pages_to_visit.pop();
+  if(next_page in pages_visited)
+  {
     crawl();
-  } else {
-    // New page we haven't visited
-    visitPage(nextPage, crawl);
+  }
+  else
+  {
+    if(next_page)
+    {
+      visit_page(next_page, crawl);
+    }
   }
 }
 
-function visitPage(url, callback) {
-  // Add page to our set
-  pagesVisited[url] = true;
-  numPagesVisited++;
-
-  // Make the request
+function visit_page(url, callback) {
+  pages_visited[url] = true;
+  num_pages_visited++;
   console.log("Visiting page " + url);
-  request(url, function(error, response, body) {
-     // Check status code (200 is HTTP OK)
-     console.log("Status code: " + response.statusCode);
-     if(response.statusCode !== 200) {
+  request(url, function(error, response, body)
+  {
+    if(response.statusCode !== 200)
+    {
        callback();
+       broken_link.push(url);
        return;
-     }
-     // Parse the document body
+    }
      var $ = cheerio.load(body);
-     var isWordFound = searchForWord($, SEARCH_WORD);
-     if(isWordFound) {
-       console.log('Word ' + SEARCH_WORD + ' found at page ' + url);
-     } else {
-       collectInternalLinks($);
-       // In this short program, our callback is just calling crawl()
-       callback();
-     }
+     $('a').each(function (){
+      var link = $(this).attr('href').toLowerCase();
+
+      if (! /^https?:\/\//.test(link))
+      {
+        if(link.indexOf('../') < 0)
+        {
+          var url2 =  host + '/' +link;
+          pages_to_visit.push(url2);
+        }
+      }
+      else
+      {
+       if(link.indexOf(host.toLowerCase()) === 0)
+       {
+         pages_to_visit.push(link);
+       }
+      }
+     });     
+     callback();
   });
 }
 
-function searchForWord($, word) {
-  var bodyText = $('html > body').text().toLowerCase();
-  return(bodyText.indexOf(word.toLowerCase()) !== -1);
-}
-
-function collectInternalLinks($) {
-    var relativeLinks = $("a[href^='/']");
-    console.log("Found " + relativeLinks.length + " relative links on page");
-    relativeLinks.each(function() {
-        pagesToVisit.push(baseUrl + $(this).attr('href'));
-    });
-}
