@@ -1,0 +1,9 @@
+<!-- views/partials/head.ejs -->
+<meta charset="UTF-8">
+<title>Housekeeper</title>
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="css/screen.css">
+<style>
+    body    { padding-top:50px; }
+</style>
+

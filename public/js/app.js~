@@ -1,0 +1,88 @@
+window.onload = function () { 
+
+var result = document.getElementById('result');
+while (result.hasChildNodes()) {  
+    list.removeChild(list.firstChild);
+}
+
+//var ws = new WebSocket('ws://192.168.80.241:40511');
+var ws = new WebSocket('ws://127.0.0.1:40511');
+ws.onopen = function ()
+{
+  var status = document.getElementById('status');
+  status.appendChild(document.createTextNode('websocket is connected ...'));
+  ws.send('connected');
+}
+
+ws.onmessage = function (ev)
+{
+  if(is_json(ev['data']))
+  {
+    var j = JSON.parse(ev['data']) ;
+    if(j.hasOwnProperty('id') && j.hasOwnProperty('val'))
+    {
+       if(document.getElementById(j['id']))
+       {
+         var div = document.getElementById(j['id']);
+         clean_element(div);
+         var p = document.createElement("P");
+         var txt = document.createTextNode('Blocker:');
+         p.appendChild(txt);
+         div.appendChild(p);
+         if(is_json(j['val']))  
+         {
+           var v = JSON.parse(j['val']) ;
+           var dl = document.createElement("DL");
+           for(var k in v)
+           {
+              var dt = document.createElement("DT");
+              var txt = document.createTextNode(k);
+              dt.append(txt);
+              var dd = document.createElement("DD");
+              var txt = document.createTextNode(v[k]);
+              dd.append(txt);
+              dl.append(dt);
+              dl.append(dd);
+           }
+           div.appendChild(dl);
+         }
+         else
+         {
+           var text = document.createTextNode(obj['val']);
+           div.appendChild(text);
+         }
+
+       }
+    }
+  } 
+  else
+  {
+    var result = document.getElementById('result');
+    var br = document.createElement('br');
+    var text = document.createTextNode(ev['data']);
+    result.appendChild(text);
+    result.appendChild(br);
+  }
+
+
+
+};
+
+
+function is_json(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+
+function clean_element(e) {
+  while (e.hasChildNodes())
+  {  
+    e.removeChild(e.firstChild);
+  }
+}
+
+};
