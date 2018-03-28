@@ -34,11 +34,13 @@ Routes
 **************************************************/
 app.get('/', function (req, res)
 {
- var data = {};
- res.render('pages/index',{data:data});
+ var doc = req.query.doc;
+ var data = {
+     doc:
+     doc
+ };
+ res.render('pages/index',data);
 });
-
-
 
 /**************************************************
 Sever start
