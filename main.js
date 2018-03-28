@@ -1,7 +1,8 @@
 var express = require('express');
 var path    = require('path');
-var exec = require ( 'child_process' ).exec;
-var vnu = require ( 'vnu-jar' );
+var exec    = require ( 'child_process' ).exec;
+var spawn   = require('child_process').spawn; 
+var vnu     = require ( 'vnu-jar' );
 var fs      = require('fs');
 var ini     = require('ini');
 var os      = require('os');
@@ -63,15 +64,12 @@ crawl();
 
 function validate_doc(url)
 {
-console.log(url);
-exec (`java -jar ${vnu} --format json ${url} `, ( error, stdout ) => {
-    if(error)
-    {
-      console.error ( `exec error: ${error}` );
-      return;
-    }
-    console.log(stdout);
-} );
+  console.log(url);
+  const child = spawn('java',['-jar',`${vnu}`,'--format','json',url,'-u']);
+  child.stderr.on('data', function (data) {
+    var str = data.toString('utf8');
+    console.log(str);
+  });
 
 }
 
