@@ -12,14 +12,6 @@ var broken_links = [];
 var url = new URL(start_url);
 var baseUrl = url.protocol + "//" + url.hostname;
 
-var handler = {
-    get: function(obj, prop) {
-        return prop in obj ?
-            obj[prop] :
-            37;
-    }
-};
-
 pages_to_visit.push(start_url);
 crawl();
 
