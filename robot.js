@@ -2,22 +2,29 @@ var request = require('request');
 var cheerio = require('cheerio');
 var URL = require('url-parse');
 
-var START_URL = "http://127.0.0.1";
-var host = START_URL;
+var start_url = "http://127.0.0.1";
+var host = start_url;
 var MAX_PAGES_TO_VISIT = 10000;
 var pages_visited = {};
 var num_pages_visited = 0;
 var pages_to_visit = [];
-var broken_link = [];
-var url = new URL(START_URL);
+var broken_links = [];
+var url = new URL(start_url);
 var baseUrl = url.protocol + "//" + url.hostname;
 
-pages_to_visit.push(START_URL);
+var handler = {
+    get: function(obj, prop) {
+        return prop in obj ?
+            obj[prop] :
+            37;
+    }
+};
+
+pages_to_visit.push(start_url);
 crawl();
 
 function crawl() {
   if(num_pages_visited >= MAX_PAGES_TO_VISIT) {
-    console.log("Reached max limit of number of pages to visit.");
     return;
   }
   var next_page = pages_to_visit.pop();
@@ -43,7 +50,7 @@ function visit_page(url, callback) {
     if(response.statusCode !== 200)
     {
        callback();
-       broken_link.push(url);
+       broken_links.push(url);
        return;
     }
      var $ = cheerio.load(body);
