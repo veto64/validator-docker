@@ -1,6 +1,9 @@
 var WebSocketServer = require('ws').Server;
-var wss = new WebSocketServer({port: 40511});
 var spawn   = require('child_process').spawn;
+var wss = new WebSocketServer({
+    port: 40511
+});
+
 
 wss.on('connection', function (ws) 
 {

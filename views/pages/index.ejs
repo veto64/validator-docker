@@ -19,40 +19,87 @@
       <fieldset>
         <legend>Checker Input
         </legend>
-        <p class="checkboxes">Show 
+        <p class="checkboxes">Entire Website
           <span class="checkboxgroup">
-            <label title="Display the markup source of the input document." for="showsource">
-              <input type="checkbox" name="showsource" id="showsource" value="yes">source
+            <label title="Entire Website" for="all">
+              <input type="checkbox" name="all" id="all" value="yes">
             </label>
           </span>
 
         <div id="inputregion">
           <label id="inputlabel" for="doc">Document URL:
           </label>
-          <input type="url" name="doc" id="doc" pattern="(?:(?:https?://.+)|(?:data:.+))?" title="Absolute URL (http, https or data only) of the document to be checked." tabindex="0" autofocus="autofocus">
+          <input type="url" name="doc" id="doc" pattern="" title="Absolute URL (http, https or data only) of the document to be checked." tabindex="0" autofocus="autofocus" value="http://127.0.0.1" >
         </div>
         <p>
           <input value="Check" type="submit" id="submit">
         </p>
       </fieldset>
     </form>
-    <script src="script.js">
-    </script>
-    <div id="results">
-    </div>
-    <hr>
-    <div id="about">
-      <p>
-        <a href="about.html">About this checker
-        </a> • 
-        <a href="about.html#issues">Report an issue
-        </a> • 
-        <span class="version">Version: 1
-        </span>
+
+
+ <div id="results">
+      <ol>
+        <li class="error">
+          <p>
+            <strong>Error
+            </strong>: 
+            <span>Obsolete doctype. Expected 
+              <code>&lt;!DOCTYPE html&gt;
+              </code>.
+            </span>
+          </p>
+          <p class="location">From line 
+            <span class="first-line">1
+            </span>, column 
+            <span class="first-col">1
+            </span>; to line 
+            <span class="last-line">1
+            </span>, column 
+            <span class="last-col">109
+            </span>
+          </p>
+          <p class="extract">
+            <code>
+              <b>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;
+              </b>
+              <span class="lf" title="Line break">↩
+              </span>&lt;html
+            </code>
+          </p>
+        </li>
+      </ol>
+      <p class="failure">There were errors.
       </p>
+      <div class="details">
+        <p class="msgschema">Used the schema for HTML + SVG 1.1 + MathML 3.0 + RDFa Lite 1.1.
+        </p>
+        <p class="msgmediatype">Used the HTML parser. Externally specified character encoding was UTF-8.
+      </div>
+      <p class="stats">Total execution time 71 milliseconds.
+      </p>
+
+
+  <p class="success">Document checking completed. No errors or warnings to show.
+  </p>
+  <div class="details">
+    <p class="msgschema">Used the schema for HTML + SVG 1.1 + MathML 3.0 + RDFa Lite 1.1.
+    </p>
+    <p class="msgmediatype">Used the HTML parser. Externally specified character encoding was UTF-8.
+    </p>
+  </div>
+  <p class="stats">Total execution time 1039 milliseconds.
+  </p>
+
+
     </div>
+
+
+
+
     <div id="content">
      <%= doc %>
     </div>
+    <% include ../common/footer %>
   </body>
 </html>

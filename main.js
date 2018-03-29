@@ -1,8 +1,8 @@
 var express = require('express');
 var path    = require('path');
-var exec    = require ( 'child_process' ).exec;
+var exec    = require('child_process').exec;
 var spawn   = require('child_process').spawn; 
-var vnu     = require ( 'vnu-jar' );
+var vnu     = require('vnu-jar');
 var fs      = require('fs');
 var ini     = require('ini');
 var os      = require('os');
@@ -10,7 +10,7 @@ var ip      = require("ip");
 var spawn   = require('child_process').spawn;
 var request = require('request');
 var cheerio = require('cheerio');
-var URL = require('url-parse');
+var URL     = require('url-parse');
 var ws      = require('./models/ws');
 let port = 4000;
 
