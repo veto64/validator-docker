@@ -41,13 +41,14 @@ Routes
 **************************************************/
 app.get('/', function (req, res)
 {
-var start_url = req.query.doc;
-var host = start_url;
+var start_url          = req.query.doc;
+var host               = start_url;
 var MAX_PAGES_TO_VISIT = 10000;
-var pages_visited = {};
-var num_pages_visited = 0;
-var pages_to_visit = [];
-var broken_links = [];
+var pages_visited      = {};
+var pages_to_validate  = {};
+var num_pages_visited  = 0;
+var pages_to_visit    = [];
+var broken_links      = [];
 
 var url = new URL(start_url);
 var baseUrl = url.protocol + "//" + url.hostname;
@@ -62,16 +63,24 @@ crawl();
 
  res.render('pages/index',data);
 
+function validate()
+{
+  for (const [k, v] of Object.entries(pages_to_validate)) 
+  {
+    //console.log(v['check']);
+    var r = validate_doc(k);
+  }
+}
 
 function validate_doc(url)
 {
-  console.log(url);
+  //console.log(url);
   const child = spawn('java',['-jar',`${vnu}`,'--format','json',url,'-u']);
   child.stderr.on('data', function (data) {
     var str = data.toString('utf8');
-    console.log(str);
+    pages_to_validate[url]['issue'] = str;
+    console.log(pages_to_validate[url]['issue']);
   });
-
 }
 
 function crawl() {
@@ -90,23 +99,34 @@ function crawl() {
     {
       visit_page(next_page, crawl);
     }
+    else
+    {
+      validate();
+    }
   }
 }
 
 function visit_page(url, callback) {
   pages_visited[url] = true;
   num_pages_visited++;
-  console.log("Visiting page " + url);
+  //console.log("Visiting page " + url);
   //validate_doc(url);
   try {
   request(url, function(error, response, body)
   {
+    if(response.headers['content-type'].indexOf('text/html') != 0)
+    {
+       callback();
+       return;
+    }
     if(response.statusCode !== 200)
     {
        callback();
        broken_links.push(url);
+       //console.log("broken link: " + url);
        return;
     }
+     pages_to_validate[url] = {'source':body,'check':''};
      var $ = cheerio.load(body);
      $('a').each(function (){
       var link = $(this).attr('href');
