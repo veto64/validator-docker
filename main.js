@@ -48,6 +48,7 @@ var pages_visited = {};
 var num_pages_visited = 0;
 var pages_to_visit = [];
 var broken_links = [];
+var _url = require('url');
 var url = new URL(start_url);
 var baseUrl = url.protocol + "//" + url.hostname;
 
@@ -74,7 +75,8 @@ function validate_doc(url)
 }
 
 function crawl() {
-  if(num_pages_visited >= MAX_PAGES_TO_VISIT) {
+  if(num_pages_visited >= MAX_PAGES_TO_VISIT)
+  {
     return;
   }
   var next_page = pages_to_visit.pop();
@@ -94,8 +96,9 @@ function crawl() {
 function visit_page(url, callback) {
   pages_visited[url] = true;
   num_pages_visited++;
-  //console.log("Visiting page " + url);
-  validate_doc(url);
+  console.log("Visiting page " + url);
+  //validate_doc(url);
+  try {
   request(url, function(error, response, body)
   {
     if(response.statusCode !== 200)
@@ -106,33 +109,41 @@ function visit_page(url, callback) {
     }
      var $ = cheerio.load(body);
      $('a').each(function (){
-      var link = $(this).attr('href').toLowerCase();
+      var link = $(this).attr('href');
 
       if (! /^https?:\/\//.test(link))
       {
-        if(link.indexOf('../') < 0)
-        {
-          var url2 =  host + '/' +link;
-          pages_to_visit.push(url2);
-        }
+        
+        var full_url = absolute_link(host,url,link);
       }
       else
       {
        if(link.indexOf(host.toLowerCase()) === 0)
        {
+         console.log(link);
          pages_to_visit.push(link);
        }
       }
      });     
      callback();
   });
+  }
+  catch (e)
+  {
+  }
 }
 
 });
 
-
-
-
+function absolute_link(base,url,link)
+{
+  //_url.resolve(url, link);
+  console.log(base);
+  console.log(url);
+  console.log(link);
+  //pages_to_visit.push(full_url);
+  return link;
+}
 
 
 /**************************************************
