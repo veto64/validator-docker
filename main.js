@@ -48,7 +48,7 @@ var pages_visited = {};
 var num_pages_visited = 0;
 var pages_to_visit = [];
 var broken_links = [];
-var _url = require('url');
+
 var url = new URL(start_url);
 var baseUrl = url.protocol + "//" + url.hostname;
 
@@ -113,14 +113,18 @@ function visit_page(url, callback) {
 
       if (! /^https?:\/\//.test(link))
       {
-        
-        var full_url = absolute_link(host,url,link);
+        if(link)
+        {
+          var full_url = absolute_link(host,url,link);
+          pages_to_visit.push(full_url);
+        }
+
       }
       else
       {
        if(link.indexOf(host.toLowerCase()) === 0)
        {
-         console.log(link);
+         //console.log(link);
          pages_to_visit.push(link);
        }
       }
@@ -135,14 +139,40 @@ function visit_page(url, callback) {
 
 });
 
-function absolute_link(base,url,link)
+function absolute_link(host,url,link)
 {
+  var _url = require('url');
+
   //_url.resolve(url, link);
-  console.log(base);
-  console.log(url);
-  console.log(link);
-  //pages_to_visit.push(full_url);
-  return link;
+
+  var base = url.split('/');
+  var slink = link.split('/');
+  if(host != url)
+  {
+    base.pop();
+  }
+
+
+  for(var x=0;x < slink.length;x++)
+  {
+
+    if (slink[x] == ".")
+    {
+      continue;
+    }
+
+    if (slink[x] == "..")
+    {
+      base.pop();
+    }
+    else
+    {
+      base.push(slink[x]);
+    }
+
+  }
+  return base.join('/');
+
 }
 
 
