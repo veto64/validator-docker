@@ -7,11 +7,18 @@ else
   var ws = new WebSocket('ws://192.168.80.241:40511');
 }
 
+
+var bar = new ProgressBar.Line('#progressbar', {easing: 'easeInOut'});
+bar.animate(1);  
+
+
+
 ws.onopen = function ()
 {
   var top = document.getElementById('top');
   top.appendChild(document.createTextNode('Ready to check'));
   ws.send('connected');
+
 }
 
 ws.onmessage = function (ev)
