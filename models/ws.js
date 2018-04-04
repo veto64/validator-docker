@@ -13,18 +13,22 @@ wss.on('connection', function (ws)
 
 });
 
-function set_id(id,val)
+function send_report(url,o)
 {
-  wss.on('connection', function (ws,req) 
-  {
-     ws.send(JSON.stringify({id:id,val:val}));
-  });
+
+   console.log(o['check']);
+  //wss.on('connection', function (ws,req) 
+  //{
+     //ws.send(JSON.stringify({id:id,val:val}));
+
+  //});
+
 }
 
 
 
 
-exports.set_id = set_id;
+exports.send_report = send_report;
 
 
 

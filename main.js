@@ -65,21 +65,35 @@ crawl();
 
 function validate()
 {
-  for (const [k, v] of Object.entries(pages_to_validate)) 
-  {
-    console.log(k);
-    //var r = validate_doc(k);
-  }
+
+  (function theLoop (data,i) {
+    var keys = Object.keys(data);
+    setTimeout(function ()
+    {
+      if(keys[i])
+      {
+        validate_doc(keys[i]);     
+      }
+      if (--i)
+      {
+        theLoop(data,i); 
+      }
+    },500);
+    })(pages_to_validate,Object.keys(pages_to_validate).length);
 }
 
+
+
+var child = [];
 function validate_doc(url)
 {
   //console.log(url);
-  const child = spawn('java',['-jar',`${vnu}`,'--format','json',url,'-u']);
-  child.stderr.on('data', function (data) {
+  child[url] = spawn('java',['-jar',`${vnu}`,'--format','json',url,'-u'],{detached: true});
+
+  child[url].stderr.on('data', function (data) {
     var str = data.toString('utf8');
-    pages_to_validate[url]['issue'] = str;
-    //console.log(pages_to_validate[url]['issue']);
+    pages_to_validate[url]['check'] = str;
+    ws.send_report(url,pages_to_validate[url]);
   });
 }
 
@@ -194,6 +208,11 @@ function absolute_link(host,url,link)
   return base.join('/');
 
 }
+
+
+
+
+
 
 
 /**************************************************
