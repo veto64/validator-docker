@@ -1,3 +1,4 @@
+
 var express = require('express');
 var path    = require('path');
 var exec    = require('child_process').exec;
@@ -72,7 +73,7 @@ function validate()
     {
       if(keys[i])
       {
-        validate_doc(keys[i]);     
+        validate_doc(keys[i],i);     
       }
       if (--i)
       {
@@ -85,7 +86,7 @@ function validate()
 
 
 var child = [];
-function validate_doc(url)
+function validate_doc(url,c)
 {
   //console.log(url);
   child[url] = spawn('java',['-jar',`${vnu}`,'--format','json',url,'-u'],{detached: true});
@@ -93,8 +94,9 @@ function validate_doc(url)
   child[url].stderr.on('data', function (data) {
     var str = data.toString('utf8');
     pages_to_validate[url]['check'] = str;
-    ws.send_report(url,pages_to_validate[url]);
+    ws.send_report(url,pages_to_validate,c);
   });
+
 }
 
 function crawl() {

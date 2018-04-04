@@ -13,10 +13,16 @@ wss.on('connection', function (ws)
 
 });
 
-function send_report(url,o)
+function send_report(url,pages,c)
 {
-
-   console.log(o['check']);
+   if(url == 'http://apache/index.html')
+   {
+     console.log(url);
+     console.log(Object.keys(pages).length);
+     console.log(c);
+     console.log(pages[url]);
+   }
+  // console.log(pages[url]['check']);
   //wss.on('connection', function (ws,req) 
   //{
      //ws.send(JSON.stringify({id:id,val:val}));
