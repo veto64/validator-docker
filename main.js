@@ -67,8 +67,8 @@ function validate()
 {
   for (const [k, v] of Object.entries(pages_to_validate)) 
   {
-    //console.log(v['check']);
-    var r = validate_doc(k);
+    console.log(k);
+    //var r = validate_doc(k);
   }
 }
 
@@ -79,7 +79,7 @@ function validate_doc(url)
   child.stderr.on('data', function (data) {
     var str = data.toString('utf8');
     pages_to_validate[url]['issue'] = str;
-    console.log(pages_to_validate[url]['issue']);
+    //console.log(pages_to_validate[url]['issue']);
   });
 }
 

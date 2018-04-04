@@ -1,16 +1,16 @@
-window.onload = function () { 
-
-var result = document.getElementById('result');
-while (result.hasChildNodes()) {  
-    list.removeChild(list.firstChild);
+if(window.location.hostname.indexOf('127') === 0)
+{
+  var ws = new WebSocket('ws://127.0.0.1:40511');
+}
+else
+{
+  var ws = new WebSocket('ws://192.168.80.241:40511');
 }
 
-//var ws = new WebSocket('ws://192.168.80.241:40511');
-var ws = new WebSocket('ws://127.0.0.1:40511');
 ws.onopen = function ()
 {
-  var status = document.getElementById('status');
-  status.appendChild(document.createTextNode('websocket is connected ...'));
+  var top = document.getElementById('top');
+  top.appendChild(document.createTextNode('Ready to check'));
   ws.send('connected');
 }
 
@@ -21,20 +21,3 @@ ws.onmessage = function (ev)
   }
 };
 
-function is_json(str) {
-    try {
-        JSON.parse(str);
-    } catch (e) {
-        return false;
-    }
-    return true;
-}
-
-function clean_element(e) {
-  while (e.hasChildNodes())
-  {  
-    e.removeChild(e.firstChild);
-  }
-}
-
-};
