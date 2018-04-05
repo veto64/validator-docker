@@ -1,21 +1,7 @@
-
-
 var express = require('express');
-var path    = require('path');
-var exec    = require('child_process').exec;
-var spawn   = require('child_process').spawn; 
-var vnu     = require('vnu-jar');
-var fs      = require('fs');
-var ini     = require('ini');
-var os      = require('os');
-var ip      = require("ip");
-var spawn   = require('child_process').spawn;
-var request = require('request');
-var cheerio = require('cheerio');
-var URL     = require('url-parse');
 var ws      = require('./models/ws');
+var v       = require('./models/validator');
 let port = 4000;
-global.count = 1;
 
 process.argv.forEach(function (val, index, array) {
   if(val.startsWith("--port="))
@@ -35,199 +21,27 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(express.static('node_modules'));
 
-
-
-
-
 /**************************************************
 Routes
 **************************************************/
 app.get('/about', function (req, res)
 {
- var data = {
-     doc: 'xxx'
- };
+ var data = {doc: 'xxx'};
  res.render('pages/index',data);
 });
 
 app.get('/', function (req, res)
 {
-var start_url          = req.query.doc;
-var host               = start_url;
-var MAX_PAGES_TO_VISIT = 10000;
-var pages_visited      = {};
-var pages_to_validate  = {};
-var num_pages_visited  = 0;
-var pages_to_visit    = [];
-var broken_links      = [];
-
-var url = new URL(start_url);
-var baseUrl = url.protocol + "//" + url.hostname;
-
-pages_to_visit.push(start_url);
-
-
-crawl();
- var data = {
-     doc: start_url
- };
-
- res.render('pages/index',data);
-function validate()
-{
-  global.count = 1;
-  (function theLoop (data,i) {
-    var keys = Object.keys(data);
-    setTimeout(function ()
-    {
-      if(keys[i])
-      {
-        validate_doc(keys[i],keys.length);     
-      }
-      if (--i)
-      {
-        theLoop(data,i); 
-      }
-    },250);
-    })(pages_to_validate,Object.keys(pages_to_validate).length);
-
-}
-
-
-
-var child = [];
-function validate_doc(url,total)
-{
-  //console.log(url);
-  //ws.send_report('validatex','ffff',1);
-  child[url] = spawn('java',['-jar',`${vnu}`,'--format','json',url,'-u'],{detached: true});
-  child[url].stderr.on('data', function (data) {
-    var str = data.toString('utf8');
-    pages_to_validate[url]['check'] = str;
-    global.count++;
-    ws.send_report(url,pages_to_validate[url],total,global.count);
-    //ws.send_report('validatex','ffff',global.count);
-  });
-
-}
-
-function crawl() {
-  if(num_pages_visited >= MAX_PAGES_TO_VISIT)
+  var start_url = req.query.doc;
+  var result = false;
+  if(start_url)
   {
-    return;
+   result = v.start(start_url);
   }
-  var next_page = pages_to_visit.pop();
-  if(next_page in pages_visited)
-  {
-    crawl();
-  }
-  else
-  {
-    if(next_page)
-    {
-      visit_page(next_page, crawl);
-    }
-    else
-    {
-      validate();
-    }
-  }
-}
-
-function visit_page(url, callback) {
-  pages_visited[url] = true;
-  num_pages_visited++;
-  //console.log("Visiting page " + url);
-  //validate_doc(url);
-  try {
-  request(url, function(error, response, body)
-  {
-    if(response.headers['content-type'].indexOf('text/html') != 0)
-    {
-       callback();
-       return;
-    }
-    if(response.statusCode !== 200)
-    {
-       callback();
-       broken_links.push(url);
-       //console.log("broken link: " + url);
-       return;
-    }
-     pages_to_validate[url] = {'source':body,'check':''};
-     var $ = cheerio.load(body);
-     $('a').each(function (){
-      var link = $(this).attr('href');
-
-      if (! /^https?:\/\//.test(link))
-      {
-        if(link)
-        {
-          var full_url = absolute_link(host,url,link);
-          pages_to_visit.push(full_url);
-        }
-
-      }
-      else
-      {
-       if(link.indexOf(host.toLowerCase()) === 0)
-       {
-         //console.log(link);
-         pages_to_visit.push(link);
-       }
-      }
-     });     
-     callback();
-  });
-  }
-  catch (e)
-  {
-  }
-}
-
+  console.log(result);
+  var data = {doc: start_url,result:result};
+  res.render('pages/index',data);
 });
-
-function absolute_link(host,url,link)
-{
-  var _url = require('url');
-
-  //_url.resolve(url, link);
-
-  var base = url.split('/');
-  var slink = link.split('/');
-  if(host != url)
-  {
-    base.pop();
-  }
-
-
-  for(var x=0;x < slink.length;x++)
-  {
-
-    if (slink[x] == ".")
-    {
-      continue;
-    }
-
-    if (slink[x] == "..")
-    {
-      base.pop();
-    }
-    else
-    {
-      base.push(slink[x]);
-    }
-
-  }
-  return base.join('/');
-
-}
-
-
-
-
-
-
 
 /**************************************************
 Sever start

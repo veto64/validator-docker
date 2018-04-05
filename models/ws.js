@@ -1,16 +1,17 @@
 const WebSocket = require('ws');
 var WebSocketServer = require('ws').Server;
+var  v = require('./validator');
 var wss = new WebSocketServer({
     port: 40511
 });
 
-wss.on('connection', function (ws) 
+wss.on('connection', function (ws,req) 
 {
   ws.on('message', function (message)
   {
-    console.log('received: %s', message);
+   var ret = v.js_start();
+   ws.send(JSON.stringify(ret));
   });
-
 });
 
 function send_test()
