@@ -13,21 +13,24 @@ wss.on('connection', function (ws)
 
 });
 
+function send_test()
+{
+  wss.on('connection', function (ws,req) 
+  {
+   ws.send(JSON.stringify({id:'progresbar',val:'1'}));
+  });
+}
+
 function send_report(url,pages,c)
 {
-   if(url == 'http://apache/index.html')
-   {
-     console.log(url);
-     console.log(Object.keys(pages).length);
-     console.log(c);
-     console.log(pages[url]);
-   }
-  // console.log(pages[url]['check']);
-  //wss.on('connection', function (ws,req) 
-  //{
-     //ws.send(JSON.stringify({id:id,val:val}));
-
-  //});
+  //console.log(url);
+  console.log(Object.keys(pages).length);
+  console.log(c);
+  //console.log(pages[url]);
+  wss.on('connection', function (ws,req) 
+  {
+    ws.send(JSON.stringify({id:'progresbar',val:'1'}));
+  });
 
 }
 
@@ -35,6 +38,7 @@ function send_report(url,pages,c)
 
 
 exports.send_report = send_report;
+exports.send_test = send_test;
 
 
 

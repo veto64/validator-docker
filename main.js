@@ -41,6 +41,15 @@ app.use(express.static('node_modules'));
 /**************************************************
 Routes
 **************************************************/
+app.get('/about', function (req, res)
+{
+ var data = {
+     doc: 'xxx'
+ };
+ res.render('pages/index',data);
+ ws.send_test();
+});
+
 app.get('/', function (req, res)
 {
 var start_url          = req.query.doc;
@@ -64,7 +73,7 @@ crawl();
  };
 
  res.render('pages/index',data);
-
+ ws.send_test();
 function validate()
 {
 

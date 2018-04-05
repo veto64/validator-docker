@@ -9,7 +9,7 @@ else
 
 
 var bar = new ProgressBar.Line('#progressbar', {easing: 'easeInOut'});
-bar.animate(1);  
+//bar.animate(1);  
 
 
 
@@ -18,13 +18,26 @@ ws.onopen = function ()
   var top = document.getElementById('top');
   top.appendChild(document.createTextNode('Ready to check'));
   ws.send('connected');
-
 }
 
 ws.onmessage = function (ev)
 {
-  if(is_json(ev['data']))
-  {
-  }
+  console.log(ev);
+  //if(is_json(ev['data']))
+  //{
+  //  var j = JSON.parse(ev['data']);
+ // }
 };
 
+function is_json(str)
+{
+  try
+  {
+   JSON.parse(str);
+  } 
+  catch (e)
+  {
+    return false;
+  }
+  return true;
+}
