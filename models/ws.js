@@ -1,5 +1,4 @@
 var WebSocketServer = require('ws').Server;
-var spawn   = require('child_process').spawn;
 var wss = new WebSocketServer({
     port: 40511
 });
@@ -23,14 +22,13 @@ function send_test()
 
 function send_report(url,pages,c)
 {
-  //console.log(url);
-  console.log(Object.keys(pages).length);
-  console.log(c);
+  console.log(url);
+
   //console.log(pages[url]);
-  wss.on('connection', function (ws,req) 
-  {
-    ws.send(JSON.stringify({id:'progresbar',val:'1'}));
-  });
+    //console.log(Object.keys(pages).length);
+
+    //ws.send(JSON.stringify({id:'progresbar',val:'1'}));
+
 
 }
 
@@ -39,6 +37,7 @@ function send_report(url,pages,c)
 
 exports.send_report = send_report;
 exports.send_test = send_test;
+exports.wss = wss;
 
 
 

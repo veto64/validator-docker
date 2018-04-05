@@ -23,7 +23,7 @@ process.argv.forEach(function (val, index, array) {
     console.log('port '+ port);
   }
 });
-
+process.setMaxListeners(0);
 
 
 /**************************************************
@@ -73,7 +73,6 @@ crawl();
  };
 
  res.render('pages/index',data);
- ws.send_test();
 function validate()
 {
 
