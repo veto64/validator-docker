@@ -9,7 +9,7 @@ else
 
 
 var bar = new ProgressBar.Line('#progressbar', {easing: 'easeInOut'});
-//bar.animate(1);  
+
 
 
 
@@ -22,11 +22,13 @@ ws.onopen = function ()
 
 ws.onmessage = function (ev)
 {
-  console.log(ev);
-  //if(is_json(ev['data']))
-  //{
-  //  var j = JSON.parse(ev['data']);
- // }
+
+  //console.log(ev['data']);
+  if(is_json(ev['data']))
+  {
+    var j = JSON.parse(ev['data']);
+    bar.animate(j['val']);  
+  }
 };
 
 function is_json(str)

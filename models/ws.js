@@ -1,3 +1,4 @@
+const WebSocket = require('ws');
 var WebSocketServer = require('ws').Server;
 var wss = new WebSocketServer({
     port: 40511
@@ -20,16 +21,19 @@ function send_test()
   });
 }
 
-function send_report(url,pages,c)
+
+function send_report(url,page,total,count)
 {
-  console.log(url);
 
-  //console.log(pages[url]);
-    //console.log(Object.keys(pages).length);
-
-    //ws.send(JSON.stringify({id:'progresbar',val:'1'}));
+wss.clients.forEach(function each(client) {
+    client.send(JSON.stringify({id:'progressbar',val:count/total}));
+  });
 
 
+  wss.on('connection', function (ws,req) 
+  {
+
+  });
 }
 
 
@@ -37,7 +41,7 @@ function send_report(url,pages,c)
 
 exports.send_report = send_report;
 exports.send_test = send_test;
-exports.wss = wss;
+
 
 
 

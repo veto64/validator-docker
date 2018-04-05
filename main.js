@@ -15,6 +15,7 @@ var cheerio = require('cheerio');
 var URL     = require('url-parse');
 var ws      = require('./models/ws');
 let port = 4000;
+global.count = 1;
 
 process.argv.forEach(function (val, index, array) {
   if(val.startsWith("--port="))
@@ -47,7 +48,6 @@ app.get('/about', function (req, res)
      doc: 'xxx'
  };
  res.render('pages/index',data);
- ws.send_test();
 });
 
 app.get('/', function (req, res)
@@ -75,35 +75,38 @@ crawl();
  res.render('pages/index',data);
 function validate()
 {
-
+  global.count = 1;
   (function theLoop (data,i) {
     var keys = Object.keys(data);
     setTimeout(function ()
     {
       if(keys[i])
       {
-        validate_doc(keys[i],i);     
+        validate_doc(keys[i],keys.length);     
       }
       if (--i)
       {
         theLoop(data,i); 
       }
-    },500);
+    },250);
     })(pages_to_validate,Object.keys(pages_to_validate).length);
+
 }
 
 
 
 var child = [];
-function validate_doc(url,c)
+function validate_doc(url,total)
 {
   //console.log(url);
+  //ws.send_report('validatex','ffff',1);
   child[url] = spawn('java',['-jar',`${vnu}`,'--format','json',url,'-u'],{detached: true});
-
   child[url].stderr.on('data', function (data) {
     var str = data.toString('utf8');
     pages_to_validate[url]['check'] = str;
-    ws.send_report(url,pages_to_validate,c);
+    global.count++;
+    ws.send_report(url,pages_to_validate[url],total,global.count);
+    //ws.send_report('validatex','ffff',global.count);
   });
 
 }
