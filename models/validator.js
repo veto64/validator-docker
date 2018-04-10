@@ -1,5 +1,6 @@
 var sexec   = require ( 'child_process' ).execSync;
 var spawn   = require('child_process').spawn; 
+var spawns   = require('child_process').spawnSync; 
 var path    = require('path');
 var vnu     = require('vnu-jar');
 var fs      = require('fs');
@@ -9,7 +10,6 @@ var ip      = require("ip");
 var spawn   = require('child_process').spawn;
 var request = require('request');
 var cheerio = require('cheerio');
-
 var URL     = require('url-parse');
 
 
@@ -30,15 +30,15 @@ pages_to_visit.push(start_url);
 
 function start(doc)
 {
-  var r = sexec(`java -jar ${vnu} --version`).toString();
-  return r;
+  var child = spawns('java',['-jar',`${vnu}`,'--format','json',doc,'-u']);
+  var error = child.stderr.toString().trim();
+  return error;
 }
 
 function js_start()
 {
   return {id:'progressbar',val:1};
 }
-
 
 
 function crawl() {
