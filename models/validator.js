@@ -14,26 +14,76 @@ var URL     = require('url-parse');
 
 
 
-var start_url          = "http://apache"; //req.query.doc;
-var host               = start_url;
+
+global.pages_to_visit  = [];
 var MAX_PAGES_TO_VISIT = 10000;
 var pages_visited      = {};
 var pages_to_validate  = {};
 var num_pages_visited  = 0;
-var pages_to_visit    = [];
 var broken_links      = [];
 
-var url = new URL(start_url);
-var baseUrl = url.protocol + "//" + url.hostname;
-pages_to_visit.push(start_url);
 
-
-function start(doc)
+function start(start_url,all=false)
 {
-  var child = spawns('java',['-jar',`${vnu}`,'--format','json',doc,'-u']);
-  var error = child.stderr.toString().trim();
-  return error;
+  global.start_url = start_url;
+  var ret = [];
+  //var child = spawns('java',['-jar',`${vnu}`,'--format','json',start_url,'-u']);
+  //ret['error'] = child.stderr.toString().trim();
+  global.pages_to_visit.push(start_url);
+  while(global.pages_to_visit.length > 0 )
+  {
+    var url = global.pages_to_visit.pop();
+    visit_page(url);
+  }
+  //console.log(start_url);
+  return ret;
 }
+
+
+function visit_page(url)
+{
+  console.log(url);
+  try {
+  request(url, function(error, response, body)
+  {
+    if(response.headers['content-type'].indexOf('text/html') != 0)
+    {
+       console.log('xxx');
+       return;
+    }
+    if(response.statusCode !== 200)
+    {
+       console.log("broken link: " + url);
+       return;
+    }
+    var $ = cheerio.load(body);
+    $('a').each(function (){
+      var link = $(this).attr('href');
+      if (! /^https?:\/\//.test(link))
+      {
+        if(link)
+        {
+          var full_url = absolute_link(global.start_url,url,link);
+          global.pages_to_visit.push(full_url);
+        }
+      }
+      else
+      {
+       if(link.indexOf(global.start_url.toLowerCase()) === 0)
+       {
+         global.pages_to_visit.push(link);
+       }
+      }
+    });     
+       
+    });
+  }
+  catch (e)
+  {
+  }    
+}
+
+
 
 function js_start()
 {
@@ -82,7 +132,6 @@ function validate()
       }
     },250);
     })(pages_to_validate,Object.keys(pages_to_validate).length);
-
 }
 
 
@@ -105,7 +154,7 @@ function validate_doc(url,total)
 
 
 
-function visit_page(url, callback) {
+function visit_page2(url, callback) {
   pages_visited[url] = true;
   num_pages_visited++;
   //console.log("Visiting page " + url);
