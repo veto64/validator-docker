@@ -32,14 +32,14 @@ app.get('/about', function (req, res)
 
 app.get('/', function (req, res)
 {
-  var start_url = req.query.doc;
-  var result = false;
-  if(start_url)
+  var data = {};
+  data['start_url'] = req.query.doc;
+  data['all']       = req.query.all;
+  data['result']    = false;
+  if(data['start_url'])
   {
-   result = v.start(start_url);
+    //data['result'] = v.start(start_url);
   }
-  console.log(result);
-  var data = {doc: start_url,result:result};
   res.render('pages/index',data);
 });
 
@@ -49,7 +49,6 @@ Sever start
 app.listen(port, function () {
   console.log('Housekeeper App listening on port:'+ port)
 })
-
 
 
 
