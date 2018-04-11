@@ -7,81 +7,85 @@ var fs      = require('fs');
 var ini     = require('ini');
 var os      = require('os');
 var ip      = require("ip");
-var spawn   = require('child_process').spawn;
 var request = require('request');
+var srequest = require('sync-request');
 var cheerio = require('cheerio');
 var URL     = require('url-parse');
 
-
-
-
 global.pages_to_visit  = [];
-var MAX_PAGES_TO_VISIT = 10000;
-var pages_visited      = {};
 var pages_to_validate  = {};
 var num_pages_visited  = 0;
 var broken_links      = [];
 
-
-function start(start_url,all=false)
+function start(start_url,all,max_pages)
 {
   global.start_url = start_url;
-  var ret = [];
+  var ret = {};
+  var vpages = [];
+  //vpages.push('http://apache2');
   //var child = spawns('java',['-jar',`${vnu}`,'--format','json',start_url,'-u']);
   //ret['error'] = child.stderr.toString().trim();
   global.pages_to_visit.push(start_url);
-  while(global.pages_to_visit.length > 0 )
+  while(global.pages_to_visit.length > 0 && vpages.length < max_pages)
   {
     var url = global.pages_to_visit.pop();
-    visit_page(url);
+     if(! vpages.includes(url))
+     {
+       //console.log(url);
+       console.log(vpages.length + '--'+ global.pages_to_visit.length);
+       var visited = visit_page(url,start_url);
+       if(visited)
+       {
+         vpages.push(url);
+       }
+     }
   }
-  //console.log(start_url);
+
+  for(i in vpages)
+  {
+    var url = vpages[i];
+    console.log(url);
+    var child = spawns('java',['-jar',`${vnu}`,'--format','json',url,'-u']);
+    ret[url] = child.stderr.toString().trim();
+  }
+
   return ret;
 }
 
-
-function visit_page(url)
+function visit_page(url,start_url)
 {
-  console.log(url);
-  try {
-  request(url, function(error, response, body)
+  res = srequest('GET',url);
+  if(res.headers['content-type'].indexOf('text/html') != 0)
   {
-    if(response.headers['content-type'].indexOf('text/html') != 0)
-    {
-       console.log('xxx');
-       return;
-    }
-    if(response.statusCode !== 200)
-    {
-       console.log("broken link: " + url);
-       return;
-    }
-    var $ = cheerio.load(body);
-    $('a').each(function (){
-      var link = $(this).attr('href');
-      if (! /^https?:\/\//.test(link))
-      {
-        if(link)
-        {
-          var full_url = absolute_link(global.start_url,url,link);
-          global.pages_to_visit.push(full_url);
-        }
-      }
-      else
-      {
-       if(link.indexOf(global.start_url.toLowerCase()) === 0)
-       {
-         global.pages_to_visit.push(link);
-       }
-      }
-    });     
-       
-    });
+    return false;
   }
-  catch (e)
+  if(res.statusCode !== 200)
   {
-  }    
+    return false;
+  }
+  var body = res.body.toString('utf-8');
+  var $ = cheerio.load(body);
+  $('a').each(function (){
+    var link = $(this).attr('href');
+    if (! /^https?:\/\//.test(link))
+    {
+      if(link)
+      {
+        var full_url = absolute_link(start_url,url,link);
+        global.pages_to_visit.push(full_url);
+      }
+    }
+    else
+    {
+     if(link.indexOf(start_url.toLowerCase()) === 0)
+     {
+       global.pages_to_visit.push(link);
+     }
+    }
+  });  
+  return true;   
 }
+
 
 
 

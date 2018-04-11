@@ -34,11 +34,12 @@ app.get('/', function (req, res)
 {
   var data = {};
   data['start_url'] = req.query.doc;
-  data['all']       = req.query.all;
+  data['all']       = req.query.all ? req.query.all : false;
+  data['max_pages'] = req.query.max_pages ? req.query.max_pages :10;
   data['result']    = false;
   if(data['start_url'])
   {
-    //data['result'] = v.start(start_url);
+    data['result'] = v.start(data['start_url'],data['all'],data['max_pages']);
   }
   res.render('pages/index',data);
 });
