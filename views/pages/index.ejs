@@ -18,13 +18,16 @@
       <fieldset>
         <legend>Checker Input
         </legend>
-        <p class="checkboxes">Entire Website      
-          <span class="checkboxgroup">
+        <p class="checkboxes">Max Pages      
             <label title="Entire Website" for="all">
-              <input type="checkbox" name="all" id="all" value="yes" <%= all == "yes" ? 'checked="checked"' : '' %>>
+              <select name="max_pages" id="max_pages">
+		<% for(var i=0;i< page_options.length;i++){ %>
+                <option value="<%= page_options[i] %>" <%= page_options[i] == max_pages ? 'selected="selected"': '' %>>
+                  <%= page_options[i] %>
+                </option> 
+              <% } %>
+              </select>
             </label>
-          </span>
-
         <div id="inputregion">
           <label id="inputlabel" for="doc">Document URL:
           </label>
@@ -37,62 +40,54 @@
       </fieldset>
     </form>
 
- <div id="results">
+     <% for(i in res){ %>
+ <div class="results">
 
       <ol>
+        <% for(ii in res[i]['check']['messages']){ %>
         <li class="error">
+          <h3><%= i %></h3>
           <p>
-            <strong>Error
-            </strong>: 
-            <span>Obsolete doctype. Expected 
-              <code>&lt;!DOCTYPE html&gt;
-              </code>.
+            <strong><%= res[i]['check']['messages'][ii]['type'] %></strong>: 
+            <span><%= res[i]['check']['messages'][ii]['message'] %>
             </span>
           </p>
-          <p class="location">From line 
-            <span class="first-line">1
-            </span>, column 
-            <span class="first-col">1
-            </span>; to line 
-            <span class="last-line">1
-            </span>, column 
-            <span class="last-col">109
-            </span>
+          <p class="location">
+            From line <span class="first-line"><%= res[i]['check']['messages'][ii]['firstLine'] %></span> 
+            to line <span class="first-col"><%= res[i]['check']['messages'][ii]['lastLine'] %></span>;
+            From column <span class="last-line"><%= res[i]['check']['messages'][ii]['firstColumn'] %></span>
+            to column <span class="last-col"><%= res[i]['check']['messages'][ii]['lastColumn'] %></span>
           </p>
           <p class="extract">
-            <code>
-              <b>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;
-              </b>
-              <span class="lf" title="Line break">↩
-              </span>&lt;html
+            <code><b><%= res[i]['check']['messages'][ii]['extract'] %></b>
+              <span class="lf" title="Line break">↩</span>&lt;html
             </code>
           </p>
         </li>
+
+     <% } %>      
+
+
       </ol>
-      <p class="failure">There were errors.
-      </p>
+
+
+      <p class="failure">There were errors.</p>
       <div class="details">
-        <p class="msgschema">Used the schema for HTML + SVG 1.1 + MathML 3.0 + RDFa Lite 1.1.
-        </p>
-        <p class="msgmediatype">Used the HTML parser. Externally specified character encoding was UTF-8.
+        <p class="msgschema">Used the schema for HTML + SVG 1.1 + MathML 3.0 + RDFa Lite 1.1.</p>
+        <p class="msgmediatype">Used the HTML parser. Externally specified character encoding was UTF-8.</p>
       </div>
-      <p class="stats">Total execution time 71 milliseconds.
-      </p>
+      <p class="stats">Total execution time 71 milliseconds.</p>
 
 
-  <p class="success">Document checking completed. No errors or warnings to show.
-  </p>
-  <div class="details">
-    <p class="msgschema">Used the schema for HTML + SVG 1.1 + MathML 3.0 + RDFa Lite 1.1.
-    </p>
-    <p class="msgmediatype">Used the HTML parser. Externally specified character encoding was UTF-8.
-    </p>
-  </div>
-  <p class="stats">Total execution time 1039 milliseconds.
-  </p>
+     <p class="success">Document checking completed. No errors or warnings to show.</p>
+     <div class="details">
+     <p class="msgschema">Used the schema for HTML + SVG 1.1 + MathML 3.0 + RDFa Lite 1.1.</p>
+     <p class="msgmediatype">Used the HTML parser. Externally specified character encoding was UTF-8.</p>
+     </div>
+     <p class="stats">Total execution time 1039 milliseconds.</p>
 
     </div>
-
+     <% } %>      
     <div id="content">
      <%= start_url %>
     </div>

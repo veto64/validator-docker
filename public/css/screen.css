@@ -147,7 +147,7 @@ hr {
     margin-bottom: 18px
 }
 
-#results,
+.results,
 #about {
     font-size: 14px;
     margin-top: 50px;
@@ -344,14 +344,14 @@ li li {
     padding-top: 0.2em;
 }
 
-#results > ol:first-child {
+.results > ol:first-child {
     padding-top: 35px;
     padding-bottom: 25px;
     background-color: #efefef;
     border-radius: 4px;
 }
 
-#results > ol:first-child > li {
+.results > ol:first-child > li {
     border: 1px solid #ccc;
     margin-bottom: 8px;
     padding-left: 12px;
@@ -359,26 +359,26 @@ li li {
     background-color: white;
 }
 
-#results > ol:first-child > li > p:first-child,
-#results > ol:first-child > li > p:first-child code {
+.results > ol:first-child > li > p:first-child,
+.results > ol:first-child > li > p:first-child code {
     font-size: 16px;
     font-weight: bold;
 }
 
-#results > ol:first-child > li > p:first-child code {
+.results > ol:first-child > li > p:first-child code {
     font-weight: normal;
 }
 
-#results > ol:first-child > li > p:first-child {
+.results > ol:first-child > li > p:first-child {
     color: transparent;
 }
 
-#results > ol:first-child > li > p:first-child > strong,
-#results > ol:first-child > li > p:first-child > span {
+.results > ol:first-child > li > p:first-child > strong,
+.results > ol:first-child > li > p:first-child > span {
     color: black;
 }
 
-#results > ol:first-child > li > p:first-child > strong:first-child {
+.results > ol:first-child > li > p:first-child > strong:first-child {
     padding: 1px 6px;
     border-radius: 6px;
     border: 1px solid #ccc;
@@ -693,7 +693,7 @@ dl.inputattrs .highlight {
     border-width: 0.1em;
 }
 
-#results .hidden {
+.results .hidden {
     display: none;
 }
 
