@@ -28,6 +28,13 @@
               <% } %>
               </select>
             </label>
+        </p>
+
+        <p class="checkboxes">Only Errors
+             <label title="Entire Website" for="all">
+              <input type="checkbox" name="only_errors" id="only_errors" value="true" <%= only_errors == true ? 'checked="checked"' : '' %>>
+             </label>
+        </p> 
         <div id="inputregion">
           <label id="inputlabel" for="doc">Document URL:
           </label>
@@ -35,14 +42,18 @@
         </div>
         <p>
           <input value="Check" type="submit" id="submit">
+          <% if(issue_pages.length){ %>
+            <input value="Revalidate Error Pages" type="submit" id="submit2" name="revalidate">
+          <% } %>
         </p>
       <div id="progressbar"></div>
       </fieldset>
-    </form>
+
 
      <% for(i in res){ %>
  <div class="results">
-
+      <% if(res[i]['check']['messages'].length){ %>
+        <input type="hidden" name="issue_pages" value="<%= i %>" />
       <ol>
         <% for(ii in res[i]['check']['messages']){ %>
         <li class="error">
@@ -66,30 +77,28 @@
         </li>
 
      <% } %>      
-
-
       </ol>
-
-
       <p class="failure">There were errors.</p>
       <div class="details">
         <p class="msgschema">Used the schema for HTML + SVG 1.1 + MathML 3.0 + RDFa Lite 1.1.</p>
         <p class="msgmediatype">Used the HTML parser. Externally specified character encoding was UTF-8.</p>
       </div>
       <p class="stats">Total execution time 71 milliseconds.</p>
-
-
-     <p class="success">Document checking completed. No errors or warnings to show.</p>
+     <% }else{ %>      
+     <% if(! only_errors) { %>
+     <p class="success">Document <%= i %> checking completed. No errors or warnings to show.</p>
      <div class="details">
      <p class="msgschema">Used the schema for HTML + SVG 1.1 + MathML 3.0 + RDFa Lite 1.1.</p>
      <p class="msgmediatype">Used the HTML parser. Externally specified character encoding was UTF-8.</p>
      </div>
      <p class="stats">Total execution time 1039 milliseconds.</p>
-
-    </div>
      <% } %>      
+     <% } %>      
+    </div>
+     <% } %>
+    </form>
+
     <div id="content">
-     <%= start_url %>
     </div>
     <% include ../common/footer %>
   </body>

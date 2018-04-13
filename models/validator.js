@@ -17,6 +17,16 @@ var pages_to_validate  = {};
 var num_pages_visited  = 0;
 var broken_links      = [];
 
+function issue_pages(pages)
+{
+  var ret = {};
+  for(i in pages)
+  {
+   ret[pages[i]] = sync_validate(pages[i],'');
+  }
+  return ret;
+}
+
 function start(start_url,max_pages)
 {
   global.start_url = start_url;
@@ -31,7 +41,7 @@ function start(start_url,max_pages)
     var url = global.pages_to_visit.pop();
      if(! vpages.hasOwnProperty(url))
      {
-       console.log(Object.keys(vpages).length + '--'+ global.pages_to_visit.length);
+       //console.log(Object.keys(vpages).length + '--'+ global.pages_to_visit.length);
        var body = visit_page(url,start_url);
        if(body)
        {
@@ -41,16 +51,21 @@ function start(start_url,max_pages)
   }
 
   for(i in vpages)
-    {
-    console.log(i);
-    var child = spawns('java',['-jar',`${vnu}`,'--format','json',i,'-u']);
-    ret[i] = {
-	"check":JSON.parse(child.stderr.toString().trim()),
-	"source":vpages[i]['source']
-    };
-    }
+  {
+    ret[i] = sync_validate(i,vpages[i]['source']);
+  }
 
   return ret;
+}
+
+function sync_validate(url,source)
+{
+    var child = spawns('java',['-jar',`${vnu}`,'--format','json',url,'-u']);
+    var r = {
+	"check":JSON.parse(child.stderr.toString().trim()),
+	"source":source
+    };
+    return r;
 }
 
 function visit_page(url,start_url)
@@ -129,7 +144,7 @@ function validate()
       if(keys[i])
       {
         //validate_doc(keys[i],keys.length);     
-        console.log(keys[i]);        
+        //console.log(keys[i]);        
       }
       if (--i)
       {
@@ -249,6 +264,7 @@ function absolute_link(host,url,link)
 
 
 exports.start = start;
+exports.issue_pages = issue_pages;
 
 
 

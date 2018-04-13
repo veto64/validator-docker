@@ -33,18 +33,39 @@ app.get('/about', function (req, res)
 app.get('/', function (req, res)
 {
   var data = {};
-  data['start_url'] = req.query.doc;
-    data['max_pages'] = req.query.max_pages ? req.query.max_pages : 1;
+  data['start_url']   = req.query.doc;
+  data['max_pages']   = req.query.max_pages   ? req.query.max_pages   : 1;
+  data['issue_pages'] = req.query.issue_pages ? req.query.issue_pages : [];
+  data['only_errors'] = req.query.only_errors ? true : false;
+  data['revalidate']  = req.query.revalidate  ? true : false;
+
+  if(typeof data['issue_pages'] === 'string' || data['issue_pages'] instanceof String)
+  {
+    var ip = [];
+    ip.push(data['issue_pages']);
+    data['issue_pages'] = ip;
+  }
+
+  console.log(data['issue_pages']);
+    
   data['res']    = {};
   data['page_options']  = [1,2,3,5,10,20,50,100];
-  if(data['start_url'])
+  if(data['issue_pages'].length && data['revalidate'])
+  {
+    data['res'] = v.issue_pages(data['issue_pages']);    
+  }
+  else if(data['start_url'])
   {
     data['res'] = v.start(data['start_url'],data['max_pages']);
-    for(i in data['res'])
+    for( i in data['res'])
     {
-	console.log(Object.keys(data['res'][i]['check']['messages']['0']));
-	//console.log(data['res'][i]['check']['messages'][2]['type']);
+     if(data['res'][i]['check']['messages'].length)
+     {
+       console.log(data['issue_pages']);
+       data['issue_pages'].push(i);
+     }
     }
+
   }
   res.render('pages/index',data);
 });
