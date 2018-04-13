@@ -52,6 +52,7 @@ app.get('/', function (req, res)
   data['page_options']  = [1,2,3,5,10,20,50,100];
   if(data['issue_pages'].length && data['revalidate'])
   {
+    data['issue_pages'] = data['issue_pages'].filter(only_unique);
     data['res'] = v.issue_pages(data['issue_pages']);    
   }
   else if(data['start_url'])
@@ -61,12 +62,12 @@ app.get('/', function (req, res)
     {
      if(data['res'][i]['check']['messages'].length)
      {
-       console.log(data['issue_pages']);
        data['issue_pages'].push(i);
      }
     }
-
+    data['issue_pages'] = data['issue_pages'].filter(only_unique);
   }
+  
   res.render('pages/index',data);
 });
 
@@ -79,3 +80,6 @@ app.listen(port, function () {
 
 
 
+function only_unique(value, index, self) { 
+    return self.indexOf(value) === index;
+}
