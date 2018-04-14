@@ -1,15 +1,8 @@
 version: '3'
 services:
-  #apache:
-  #  container_name: apache
-  #  image: "salamander1/apache2-php7"    
-  #  ports:
-  #   - "80:80"
-  #  volumes:
-  #   - "./../:/var/www/html/"
-
   validator:
     container_name: validator
     image: validator
     ports:
      - "4000:4000"
+    network_mode: "host"
