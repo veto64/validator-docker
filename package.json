@@ -27,6 +27,7 @@
     "ip": "^1.1.5",
     "progressbar.js": "^1.0.1",
     "request": "^2.85.0",
+    "sync-request": "^6.0.0",
     "url": "^0.11.0",
     "url-parse": "^1.2.0",
     "vnu-jar": "^18.3.0",
