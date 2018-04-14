@@ -13,16 +13,15 @@
       </h1>
     </div>
     <p class="disclaimer">This validator is in development please <a href="https://github.com/veto64/validator"> help</a> to improve </p>
-    <h2 id="top"></h2>
     <form method="get">
       <fieldset>
         <legend>Checker Input
         </legend>
         <p class="checkboxes">Max Pages      
-            <label title="Entire Website" for="all">
+          <label title="Max Pages" for="max_pages">
               <select name="max_pages" id="max_pages">
 		<% for(var i=0;i< page_options.length;i++){ %>
-                <option value="<%= page_options[i] %>" <%= page_options[i] == max_pages ? 'selected="selected"': '' %>>
+                <option value="<%= page_options[i] %>" <%= page_options[i] == max_pages ? selected="selected" : '' %>>
                   <%= page_options[i] %>
                 </option> 
               <% } %>
@@ -31,7 +30,7 @@
         </p>
 
         <p class="checkboxes">Only Errors
-             <label title="Entire Website" for="all">
+             <label title="Only Eerrors" for="only_errors">
               <input type="checkbox" name="only_errors" id="only_errors" value="true" <%= only_errors == true ? 'checked="checked"' : '' %>>
              </label>
         </p> 
