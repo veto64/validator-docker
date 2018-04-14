@@ -74,7 +74,7 @@
               <span class="lf" title="Line break">↩</span>&lt;html
             </code>
           </p>
-        </li>
+            </li>
 
      <% } %>      
       </ol>
@@ -83,7 +83,7 @@
         <p class="msgschema">Used the schema for HTML + SVG 1.1 + MathML 3.0 + RDFa Lite 1.1.</p>
         <p class="msgmediatype">Used the HTML parser. Externally specified character encoding was UTF-8.</p>
       </div>
-      <p class="stats">Total execution time 71 milliseconds.</p>
+      <p class="stats">Total execution time <%= res[i]['time'] %> milliseconds.</p>
      <% }else{ %>      
      <% if(! only_errors) { %>
      <p class="success">Document <%= i %> checking completed. No errors or warnings to show.</p>
@@ -91,7 +91,7 @@
      <p class="msgschema">Used the schema for HTML + SVG 1.1 + MathML 3.0 + RDFa Lite 1.1.</p>
      <p class="msgmediatype">Used the HTML parser. Externally specified character encoding was UTF-8.</p>
      </div>
-     <p class="stats">Total execution time 1039 milliseconds.</p>
+      <p class="stats">Total execution time <%= res[i]['time'] %> milliseconds.</p>
      <% } %>      
      <% } %>      
     </div>

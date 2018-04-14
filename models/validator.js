@@ -60,10 +60,14 @@ function start(start_url,max_pages)
 
 function sync_validate(url,source)
 {
+    var start =  Math.round((new Date()).getTime());
     var child = spawns('java',['-jar',`${vnu}`,'--format','json',url,'-u']);
+    var end =  Math.round((new Date()).getTime());
+    time = end -start ;
     var r = {
 	"check":JSON.parse(child.stderr.toString().trim()),
-	"source":source
+	"source":source,
+        "time": time
     };
     return r;
 }

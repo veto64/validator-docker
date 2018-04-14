@@ -45,8 +45,6 @@ app.get('/', function (req, res)
     ip.push(data['issue_pages']);
     data['issue_pages'] = ip;
   }
-
-  console.log(data['issue_pages']);
     
   data['res']    = {};
   data['page_options']  = [1,2,3,5,10,20,50,100];
