@@ -20,6 +20,8 @@
   "dependencies": {
     "boom": "^7.2.0",
     "cheerio": "^1.0.0-rc.2",
+    "concat-stream": "^1.6.2",
+    "cryptiles": "^4.1.1",
     "ejs": "^2.5.9",
     "express": "^4.16.3",
     "forever": "^0.15.3",
