@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/veto64/validator.git"
+    "url": "git+https://calantas.org/validator"
   },
   "author": "veto64",
   "license": "GPL-3.0+",
   "bugs": {
-    "url": "https://github.com/veto64/validator/issues"
+    "url": "https://calantas.org/validator"
   },
-  "homepage": "https://github.com/veto64/validator#readme",
+  "homepage": "https://calantas.org/validator",
   "dependencies": {
     "boom": "^7.2.0",
     "cheerio": "^0.22.0",

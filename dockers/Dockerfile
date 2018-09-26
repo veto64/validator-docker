@@ -1,6 +1,7 @@
-FROM node:9.11.1-alpine
-RUN apk add --no-cache git openjdk8
-RUN git clone https://github.com/veto64/validator
+FROM node:stretch
+RUN apt-get update
+RUN apt-get install -y git default-jdk
+RUN git clone https://veto@calantas.org/validator validator
 WORKDIR validator
 RUN npm i
 RUN npm i -g forever
