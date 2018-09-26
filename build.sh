@@ -1,2 +1,3 @@
 #!/bin/bash
-docker build . -t salamander1/validator
+docker build . -t veto64/validator-docker
+
